@@ -76,6 +76,19 @@ change it's partition type to "BIOS Boot" (which has the
 GUID `21686148-6449-6E6F-744E-656564454649`).  You can do this with GNOME's 
 Disks utility, without resorting to the terminal!
 
+Optionally you can add more paritions.
+For example:
+* Add generic partition for file transfers. It is recommended to format it as ExFAT.
+* Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
+* Add Windows Install prition. Format it as NTFS and extract ISO content
+  and optionally autounattend.xml files on to it.
+  There is a boot menu option that will search and start the first
+  Windows install instance it finds.
+If you want to be able to mount one of the partitions on Android/Windows
+it is recommended to place that partition right after the GLIMISO
+and mark the first (GLIM/EFI) partition as "system" to hide it.
+GLIMISO will be skipped anyways sine it is not supported by other OSs.
+
 
 Installation
 ------------
@@ -264,8 +277,8 @@ create a GitHub pull request which includes :
 
 ---
 Copyleft 2012-2023 Matthias Saou http://matthias.saou.eu/
-
 Copyleft 2025 Chris Handley https://github.com/cshandley-uk
+Copyleft 2025 Eugene Sanivsky (eugenesan) https://github.com/eugenesan
 
 All configuration files included are public domain. Do what you want with them.
 The invader logo was made by me, so unless the exact shape is covered by
