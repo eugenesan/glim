@@ -26,8 +26,7 @@ As modern Linux ISOs often exceed the 4GB file size limit of FAT32, GLIM now
 supports a second partition using other filesystems supported by GRUB2, such as 
 ext3/ext4, NTFS or exFAT - but the distribution must also support booting from 
 it, which isn't the case for many with NTFS (Ubuntu does, Fedora doesn't) and 
-exFAT (Ubuntu doesn't, Fedora does).  Ext4 is a safe bet for the second 
-partition.
+exFAT (Ubuntu doesn't, Fedora does). Ext4 is a safe bet for the second partition.
 
 
 Screenshots
@@ -43,10 +42,14 @@ Recent changes
 * GLIM now easily supports ISO files >4GB through the use of a second partition,
 although you can still use a single partition if you want.
 
-* The ISO folder has been moved from `boot/iso/` to just `iso/`, so that it's 
+* The ISO folder has been moved from `/boot/iso/` to just `/iso/`, so that it's
 easier to find, and also is in the same location whether you use one or two 
 partitions.
 
+* Support for booting Windows install from a separate NTFS partition was added.
+
+* Since vast majority of ISOs are uniqely named, only openbsd/calculate ISOs
+should be placed in their respective directories. The rest can reside in `/iso/`.
 
 Requirements
 ------------
@@ -98,14 +101,14 @@ memory stick (or external hard drive).
 
 Then clone the git repository (or use Code > Download ZIP before unzipping it), 
 and just run the script (as a normal user) :
-
-    ./glim.sh
+```./glim.sh```
 
 Once finished, you may change the filesystem label to anything you like. 
-The script will have created an `iso` folder, inside of which you will see an 
-empty folder for each supported Linux distro.
+The script will have created an `/iso/` folder, inside of which you will see
+a few empty folders for distributions with oddly named ISOs.
+The rest if ISOs can be placed directly in `/iso` folder.
 
-The supported `iso` sub-directories (in alphabetical order) are :
+The supported ISOs (in alphabetical order) are:
 
 [//]: # (distro-list-start)
 
@@ -153,10 +156,11 @@ The supported `iso` sub-directories (in alphabetical order) are :
 
 [//]: # (distro-list-end)
 
-Any unpopulated directory will have the matching boot menu entry automatically
-hidden, so to skip any distribution, just don't copy any files into it.
+Any unpopulated/unsupported folder and unsupported ISOs will be ignored.
+To disable any ISO just move it to unsupported folder or add one or more charachters
+in the beginning of its filename.
 
-Download the right ISO image(s) to the matching directory. If you require
+Download the right ISO image(s) to the `/iso/` or dedicated directory. If you require
 boot parameter tweaks, edit the appropriate `boot/grub2/inc-*.cfg` file.
 
 Items order in the menu
@@ -286,4 +290,3 @@ copyright somewhere, do what you want with it.
 The background is "Wallpaper grey" © 2008 payalnic (DeviantArt)
 The `ascii.pf2` font comes from GRUB, which is GPLv3+ licensed. For more
 details as well as the source code, see http://www.gnu.org/software/grub/
-

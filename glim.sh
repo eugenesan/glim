@@ -237,13 +237,8 @@ if [[ ! -d "${USBMNTISO}/iso" ]]; then
 fi
 echo "GLIM installed! Time to populate the '${USBMNTISO}/iso' sub-directories."
 
-# Now also pre-create all supported sub-directories since empty are ignored
-args=(
-  -E -n
-  '/\(distro-list-start\)/,/\(distro-list-end\)/{s,^\* \[`([a-z0-9]+)`\].*$,\1,p}'
-)
-
-for DIR in $(sed "${args[@]}" "$(dirname "$0")"/README.md); do
+# Now also pre-create sub-directories for all non-uniqely named ISOs
+for DIR in gentoo openbsd calculate; do
   if [[ ! -d "${USBMNTISO}/iso/${DIR}" ]]; then
     ${ISOCMD_PREFIX} mkdir -p "${USBMNTISO}/iso/${DIR}"
     if [ -n "$ISOCMD_CHOWN" ]; then $ISOCMD_CHOWN "${USBMNTISO}/iso/${DIR}"; fi
