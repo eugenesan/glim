@@ -5,11 +5,17 @@ https://github.com/thias/glim | http://glee.thias.es/GLIM
 
 
 Overview
---------
+---
 
-GLIM is a set of grub configuration files to turn a simple VFAT or FAT32 
-formatted USB memory stick containing many GNU/Linux distribution ISO images 
-into a neat device from which many different Live environments can be used.
+GLIM "[G]RUB2 [L]ive [I]SO [M]ultiboot" is a set of grub configuration files
+to turn USB memory stick containing GNU/Linux, *BSD and Windows ISO images
+into a neat device from which many different Live environments
+and Installation media can be used.
+
+GLIM is more basic but completely open source alternative to Ventoy.
+In fact, GLIM doesn't provide any runtime code (except basic scripts in GRUB configuation).
+All is installed on the USB drive is GRUB2 binaries provided by the disribution
+you are installing it from.
 
 Advantages over extracting files or using special Live USB creation tools :
 
@@ -30,14 +36,14 @@ exFAT (Ubuntu doesn't, Fedora does). Ext4 is a safe bet for the second partition
 
 
 Screenshots
------------
+---
 
 ![Main Menu](https://github.com/thias/glim/raw/master/screenshots/GLIM-3.0-shot1.png)
 ![Ubuntu Submenu](https://github.com/thias/glim/raw/master/screenshots/GLIM-3.0-shot2.png)
 
 
 Recent changes
---------------
+---
 
 * GLIM now easily supports ISO files >4GB through the use of a second partition,
 although you can still use a single partition if you want.
@@ -46,21 +52,21 @@ although you can still use a single partition if you want.
 easier to find, and also is in the same location whether you use one or two 
 partitions.
 
-* Support for booting Windows install from a separate NTFS partition was added.
+* Glim now supports booting Windows install from separate NTFS partitions.
+More details below.
 
-* Since vast majority of ISOs are uniqely named, only openbsd/calculate ISOs
-should be placed in their respective directories. The rest can reside in `/iso/`.
+* Since vast majority of ISOs are uniquely named, only openbsd and calculate ISOs
+should be placed in their respective directories.
+The rest of the ISOs are expected to reside in `/iso/`.
 
-Requirements
-------------
+Requirements / Layout
+---
 
 You need a USB memory stick (or external hard drive!) partitioned & formatted 
 one of the following ways:
 
 1. A single partition formatted as FAT32 with the filesystem label `GLIM`. 
 It doesn't matter if it uses MBR or GPT.
-
-or
 
 2. Two partitions.  The small first partition must be formatted as FAT32 with 
 the filesystem label `GLIM`, I suggest 100MB in size.  The second partition 
@@ -69,6 +75,28 @@ the USB stick uses MBR, but if it uses GPT (as GNOME's Disks utility does) then
 GRUB only supports installing for EFI (not BIOS) - unless you add a third BIOS 
 Boot partition.  GLIM needs the BIOS Boot partition to come after the other two 
 partitions.
+
+3. Optionally you can add more paritions. For example:
+ -  Add generic partition for file transfers. It is recommended to format it as ExFAT.
+ - Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
+  To trick Tails to use this partition as Persitent storage:
+  1. Name the LUKS container and the ext4 partition as "TailData"
+  2. Change partitiontype to "Linux Reserved"
+  3. Create folders: `dont-ask-again`, `Persitent` owned by user 1000:1000
+  4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by 115:122
+  Note: You might see a harmless warning regarding failed Persitent storage upgrade.
+        It happens because Tails assumes the Tails image is directly on the USB drive
+        when Persistent storage is available.
+ - Add Windows Install parition. Format it as NTFS and extract ISO content
+  and optionally autounattend.xml files on to it.
+  There is a boot menu option that will search and start the first
+  Windows install instance it finds.
+
+  Note:
+    If you want to be able to mount one of the partitions on Android/Windows
+    it is recommended to place that partition right after the GLIMISO
+    and mark the first (GLIM/EFI) partition as "system" to hide it.
+  GLIMISO will be skipped anyways sine it is not supported by other OSs.
 
 See the link below for details on how to create a BIOS Boot partition:
 
@@ -79,22 +107,9 @@ change it's partition type to "BIOS Boot" (which has the
 GUID `21686148-6449-6E6F-744E-656564454649`).  You can do this with GNOME's 
 Disks utility, without resorting to the terminal!
 
-Optionally you can add more paritions.
-For example:
-* Add generic partition for file transfers. It is recommended to format it as ExFAT.
-* Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
-* Add Windows Install prition. Format it as NTFS and extract ISO content
-  and optionally autounattend.xml files on to it.
-  There is a boot menu option that will search and start the first
-  Windows install instance it finds.
-If you want to be able to mount one of the partitions on Android/Windows
-it is recommended to place that partition right after the GLIMISO
-and mark the first (GLIM/EFI) partition as "system" to hide it.
-GLIMISO will be skipped anyways sine it is not supported by other OSs.
-
 
 Installation
-------------
+---
 
 Mount the GLIM partition (and the GLIMISO partition if present) on your USB 
 memory stick (or external hard drive).
@@ -164,7 +179,7 @@ Download the right ISO image(s) to the `/iso/` or dedicated directory. If you re
 boot parameter tweaks, edit the appropriate `boot/grub2/inc-*.cfg` file.
 
 Items order in the menu
------------------------
+---
 
 Menu items for a distro are ordered by modification time of the iso files
 starting from the most recent ones. If some iso files have the same mtime, their
@@ -197,7 +212,7 @@ Sample ordered menu:
 | Debian Live 9.13.0 amd64 standard  | 17 June 2017 + 13 days  |
 
 Special Cases
--------------
+---
 
 ### iPXE
 
@@ -242,7 +257,7 @@ Some Ubuntu flavours also bundle the Nvidia driver (like Kubuntu), some don't
 
 
 Testing
--------
+---
 
 With KVM it should "just work". The `/dev/sdx` device should be configured as
 an IDE or SATA disk (for some reason, as USB disk didn't work for me on Fedora
@@ -254,7 +269,7 @@ firmwares.
 
 
 Troubleshooting
----------------
+---
 
 If you have any problem to boot, for instance stuck at the GRUB prompt before
 the menu, try re-installing.
@@ -264,7 +279,7 @@ I've seen weird things happen...
 
 
 Contributing
-------------
+---
 
 If you find GLIM useful but the configuration of the OS you require is missing
 or simply outdated, please feel free to contribute! What you will need is to
@@ -279,10 +294,12 @@ create a GitHub pull request which includes :
  * An updated supported directories list in this README file.
 
 
+Credits
 ---
-Copyleft 2012-2023 Matthias Saou http://matthias.saou.eu/
-Copyleft 2025 Chris Handley https://github.com/cshandley-uk
-Copyleft 2025 Eugene Sanivsky (eugenesan) https://github.com/eugenesan
+
+- Copyleft 2012-2023 Matthias Saou http://matthias.saou.eu/
+- Copyleft 2025 Chris Handley https://github.com/cshandley-uk
+- Copyleft 2025 Eugene Sanivsky (eugenesan) https://github.com/eugenesan
 
 All configuration files included are public domain. Do what you want with them.
 The invader logo was made by me, so unless the exact shape is covered by
