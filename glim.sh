@@ -8,7 +8,7 @@
 # Non strict order might be beneficial when having general use FAT32/ExFat partition
 # for sharing files with Android/Windows as those OSs expect the first partition to be mountable.
 # In that case, other partitions can precede GLIM and GLIMISO partitions.
-CHECK_ORDER="true"
+CHECK_ORDER="false"
 
 # Check that we are *NOT* running as root
 if [[ `id -u` -eq 0 ]]; then
@@ -253,6 +253,6 @@ done
 
 echo "Copying readme to ${USBMNTISO} and ${USBMNT}"
 cp -v "$(dirname ${0})/README.md" "${USBMNT}/glim-readme.txt"
-[[ -d "${USBMNTISO}" ]] && cp -v "$(dirname ${0})/README.md" "${USBMNTISO}/glim-readme.txt"
+[[ -d "${USBMNTISO}" ]] && cp -v "$(dirname ${0})/README.md" "${USBMNTISO}/iso/glim-readme.txt"
 
 echo "Finished!"

@@ -48,14 +48,12 @@ Recent changes
 although you can still use a single partition if you want.
 
 * The ISO folder has been moved from `/boot/iso/` to just `/iso/`, so that it's
-easier to find, and also is in the same location whether you use one or two 
-partitions.
+easier to find, and also is in the same location whether you use one or two partitions.
 
-* Glim now supports booting Windows 10/11 Setup or Liev PE from separate NTFS partitions.
+* Glim now supports booting Windows (x64) 10+ Setup or PreinstallEnvironment from separate NTFS partitions.
 
 * Since vast majority of ISOs are uniquely named, only openbsd and calculate ISOs
-should be placed in their respective directories.
-The rest of the ISOs are expected to reside in `/iso/`.
+should be placed in their respective directories. The rest of the ISOs are expected to reside in `/iso/`.
 
 Requirements / Layout
 ---
@@ -66,25 +64,25 @@ one of the following ways:
 1. A single partition formatted as FAT32 with the filesystem label `GLIM`. 
 It doesn't matter if it uses MBR or GPT.
 
-2. Two partitions.  The small first partition must be formatted as FAT32 with 
-the filesystem label `GLIM`, I suggest 100MB in size.  The second partition 
-should be formatted as Ext4 with the filesystem label `GLIMISO`.  It's best if 
-the USB stick uses MBR, but if it uses GPT (as GNOME's Disks utility does) then 
-GRUB only supports installing for EFI (not BIOS) - unless you add a third BIOS 
-Boot partition.  GLIM needs the BIOS Boot partition to come after the other two 
-partitions.
+2. Two partitions. The small first partition must be formatted as FAT32 with
+the filesystem label `GLIM` and recommended size of 32MB (actual GLIM size is only 12MB).
+The second partition should be formatted as Ext4 with the filesystem label `GLIMISO`.
+It's best if the USB stick uses MBR, but if it uses GPT (as GNOME's Disks utility does) then
+GRUB only supports installing for EFI (not BIOS) - unless you add a third BIOS Boot partition.
+GLIM needs the BIOS Boot partition to come after the other two partitions.
 
 3. Optionally you can add more paritions. For example:
  * Add generic partition for file transfers. It is recommended to format it as ExFAT.
  * Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
-   To trick Tails to use this partition as Persitent storage:
+   To trick Tails to use this partition as Persistent storage:
     1. Name the LUKS container and the ext4 partition as "TailData"
     2. Change partitiontype to "Linux Reserved"
-    3. Create folders: `dont-ask-again`, `Persitent` owned by user 1000:1000
-    4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by 115:122
-    Note: You might see a harmless warning regarding failed Persitent storage upgrade.
-          It happens because Tails assumes the Tails image is directly on the USB drive
-          when Persistent storage is available.
+    3. Create folders: `dont-ask-again`, `Persistent/Tor Browser` owned by user 1000:1000
+    4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by user 115:122
+    Note:
+     You might see a harmless warning regarding failed Persistent storage upgrade.
+     It happens because Tails assumes the Tails image is directly on the USB drive
+     when Persistent storage is available.
  * Add Windows Setup/PE paritions formated as NTFS and containing ISO content
    of your favorite Windows or LiveCD.
    You can also place autounattend.xml on those partitions if you want to allow customizations.
@@ -97,6 +95,21 @@ partitions.
     To do that you need to toggle CHECK_ORDER variable in glim.sh during installation.
     Also it is recommended to mark the (GLIM/EFI) partition as "system" to hide it.
     Other partition might result in harmless warnings they are not supported by other OSs.
+
+    Here is an example of a recommended disk layout that covers all supported functionality:
+
+```
+Disk /dev/sda: 124GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Number  Start   End     Size    File system  Name       Flags             Purpose
+1      1049kB  64.4GB  64.4GB  exfat        GLIMXFAT   msftdata          [Generic file storage accesible on Linux/Windows/Andoird/MacOS]
+3      64.4GB  98.8GB  34.4GB  ext4         GLIMISO                      [ISO storage and Generic Storage for Linux]
+4      98.8GB  107GB   8594MB  luks+ext4    TailsData                    [Encrypted Persistent Storage for Tails]
+5      107GB   116GB   8403MB  ntfs         GLIMWIN11  msftdata          [Windows 11 Setup]
+6      116GB   124GB   8401MB  ntfs         GLIMWINPE  msftdata          [Windows PE (HBCD)]
+2      124GB   124GB   33.6MB  fat16        GLIM       boot, hidden, esp [GLIM boot partition]
+```
 
 See the link below for details on how to create a BIOS Boot partition:
 
