@@ -71,7 +71,7 @@ if [[ "${CHECK_ORDER}" == "true"  ]] && [[ "${USBDEV1}" != "${PartOrder[0]}" ]];
   exit 1
 fi
 echo "Found block device where to install GRUB2 : ${USBDEV}"
-if [[ `ls -1 ${USBDEV}* | wc -l` -gt 3 ]]; then
+if [[ "${CHECK_ORDER}" == "true"  ]] && [[ `ls -1 ${USBDEV}* | wc -l` -gt 3 ]]; then
   echo "WARNING: There are more than two partitions on ${USBDEV}"
 fi
 
@@ -134,7 +134,7 @@ PartType="$(echo "$FDisk" | grep -iPo "Disklabel type:\s\K.*")"
 if [[ $? -ne 0 ]]; then
   PartType="dos"	# Error, so assume the best case so don't give spurious warnings
 elif [[ "$PartType" == "gpt" ]]; then
-  echo "The ${USBDEV} block device uses GPT, which means you can only install for EFI (not BIOS) unless it has a 1MB BIOS Boot partition for Grub.  GLIM needs this after the GLIMISO partition (if there is one)."
+  echo -e "The ${USBDEV} block device uses GPT, which means you can only install for EFI (not BIOS) unless it has a 1MB BIOS Boot partition for Grub.\nGLIM needs this after the GLIMISO partition (if there is one)."
 else
   PartType="dos"	# Ensure script behaves sensibly if fdisk doesn't output "gpt" or "dos"
   echo "The ${USBDEV} block device uses MBR, which means Grub can install for both EFI & BIOS."
@@ -250,5 +250,9 @@ for DIR in openbsd calculate; do
     if [ -n "$ISOCMD_CHOWN" ]; then $ISOCMD_CHOWN "${USBMNTISO}/iso/${DIR}"; fi
   fi
 done
+
+echo "Copying readme to ${USBMNTISO} and ${USBMNT}"
+cp -v "$(dirname ${0})/README.md" "${USBMNT}/glim-readme.txt"
+[[ -d "${USBMNTISO}" ]] && cp -v "$(dirname ${0})/README.md" "${USBMNTISO}/glim-readme.txt"
 
 echo "Finished!"
