@@ -12,10 +12,9 @@ to turn USB memory stick containing GNU/Linux, *BSD and Windows ISO images
 into a neat device from which many different Live environments
 and Installation media can be used.
 
-GLIM is more basic but completely open source alternative to Ventoy.
-In fact, GLIM doesn't provide any runtime code (except basic scripts in GRUB configuation).
-All is installed on the USB drive is GRUB2 binaries provided by the disribution
-you are installing it from.
+GLIM is a more basic but completely open source alternative to Ventoy.
+In fact, GLIM only provides basic GRUB scripts and GRUB configuations.
+Runtime binaries are simply copied from GRUB2 instance of the host.
 
 Advantages over extracting files or using special Live USB creation tools :
 
@@ -52,8 +51,7 @@ although you can still use a single partition if you want.
 easier to find, and also is in the same location whether you use one or two 
 partitions.
 
-* Glim now supports booting Windows install from separate NTFS partitions.
-More details below.
+* Glim now supports booting Windows 10/11 Setup or Liev PE from separate NTFS partitions.
 
 * Since vast majority of ISOs are uniquely named, only openbsd and calculate ISOs
 should be placed in their respective directories.
@@ -77,26 +75,28 @@ Boot partition.  GLIM needs the BIOS Boot partition to come after the other two
 partitions.
 
 3. Optionally you can add more paritions. For example:
- -  Add generic partition for file transfers. It is recommended to format it as ExFAT.
- - Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
-  To trick Tails to use this partition as Persitent storage:
-  1. Name the LUKS container and the ext4 partition as "TailData"
-  2. Change partitiontype to "Linux Reserved"
-  3. Create folders: `dont-ask-again`, `Persitent` owned by user 1000:1000
-  4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by 115:122
-  Note: You might see a harmless warning regarding failed Persitent storage upgrade.
-        It happens because Tails assumes the Tails image is directly on the USB drive
-        when Persistent storage is available.
- - Add Windows Install parition. Format it as NTFS and extract ISO content
-  and optionally autounattend.xml files on to it.
-  There is a boot menu option that will search and start the first
-  Windows install instance it finds.
+ * Add generic partition for file transfers. It is recommended to format it as ExFAT.
+ * Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
+   To trick Tails to use this partition as Persitent storage:
+    1. Name the LUKS container and the ext4 partition as "TailData"
+    2. Change partitiontype to "Linux Reserved"
+    3. Create folders: `dont-ask-again`, `Persitent` owned by user 1000:1000
+    4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by 115:122
+    Note: You might see a harmless warning regarding failed Persitent storage upgrade.
+          It happens because Tails assumes the Tails image is directly on the USB drive
+          when Persistent storage is available.
+ * Add Windows Setup/PE paritions formated as NTFS and containing ISO content
+   of your favorite Windows or LiveCD.
+   You can also place autounattend.xml on those partitions if you want to allow customizations.
+   Good starting point for create such customizations is here: https://schneegans.de/windows/unattend-generator/
+   Boot menu option will be added for each detected instance.
 
-  Note:
+   Note:
     If you want to be able to mount one of the partitions on Android/Windows
-    it is recommended to place that partition right after the GLIMISO
-    and mark the first (GLIM/EFI) partition as "system" to hide it.
-  GLIMISO will be skipped anyways sine it is not supported by other OSs.
+    it is recommended to format it as FAT32 or ExFAT and place it as first prtition.
+    To do that you need to toggle CHECK_ORDER variable in glim.sh during installation.
+    Also it is recommended to mark the (GLIM/EFI) partition as "system" to hide it.
+    Other partition might result in harmless warnings they are not supported by other OSs.
 
 See the link below for details on how to create a BIOS Boot partition:
 
@@ -188,12 +188,12 @@ menu items are ordered alphabetically.
 Here is a generic idea how to keep it nicely ordered when you have multiple
 releases of some distro:
 
-- touch your **release** iso files with the release date
-- touch your **point release** iso files with the original release date plus a
+* touch your **release** iso files with the release date
+* touch your **point release** iso files with the original release date plus a
   day per point. This is a way to ensure point releases never pop above the next
   release like Debian 10.13.0 (released 10 Sep 2022) would still be below Debian
   11.0.0 (released 14 August 2021)
-- in case there are multiple flavours of some iso but the version is the same,
+* in case there are multiple flavours of some iso but the version is the same,
   touch all of them with the same date for the whole group to be ordered
   alphabetically
 
