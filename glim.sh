@@ -3,6 +3,13 @@
 # BASH. It's what I know best, sorry.
 #
 
+# Configure if we need to check PartOrder.
+# This choice is arbitrary and doesn't affect functionality of GLIM.
+# Non strict order might be beneficial when having general use FAT32/ExFat partition
+# for sharing files with Android/Windows as those OSs expect the first partition to be mountable.
+# In that case, other partitions can precede GLIM and GLIMISO partitions.
+CHECK_ORDER="true"
+
 # Check that we are *NOT* running as root
 if [[ `id -u` -eq 0 ]]; then
   echo "ERROR: Don't run as root, use a user with full sudo access."
@@ -59,7 +66,7 @@ fi
 echo "Running fdisk -l ${USBDEV} (with sudo) ..."
 FDisk="$(sudo fdisk -l ${USBDEV})"
 mapfile -t PartOrder < <(echo "$FDisk" | grep -E ^${USBDEV} | sort -nk2,2 | awk '{ print $1 }')
-if [[ "${USBDEV1}" != "${PartOrder[0]}" ]]; then
+if [[ "${CHECK_ORDER}" == "true"  ]] && [[ "${USBDEV1}" != "${PartOrder[0]}" ]]; then
   echo "ERROR: $USBDEV1 is not the first partition on the block device."
   exit 1
 fi
@@ -76,7 +83,7 @@ elif [[ "$(echo "$USBDEV2" | wc -l)" -gt 1 ]]; then
   echo "ERROR: multiple partitions found with label 'GLIMISO', please disconnect/rename the unwanted ones."
   exit 1
 else
-  if [[ "$USBDEV2" != "${PartOrder[1]}" ]]; then
+  if [[ "${CHECK_ORDER}" == "true"  ]] && [[ "$USBDEV2" != "${PartOrder[1]}" ]]; then
     USBDEV2=""
     echo "WARNING: Ignored 'GLIMISO' partition ${USBDEV2} because it is not the second partition on the block device."
   else
@@ -171,7 +178,6 @@ if [[ $EFI == true && ! -d /usr/lib/grub/x86_64-efi ]]; then
   fi
 fi
 
-
 #
 # Get serious. If we get here, things are looking sane
 #
@@ -237,10 +243,10 @@ if [[ ! -d "${USBMNTISO}/iso" ]]; then
 fi
 echo "GLIM installed! Time to populate the '${USBMNTISO}/iso' sub-directories."
 
-# Now also pre-create sub-directories for all non-uniqely named ISOs
-for DIR in gentoo openbsd calculate; do
+echo -e "Pre-creating sub-directories for non-uniquely named ISOs.\nAll other ISOs are expected to reside directly in '${USBMNTISO}/iso'"
+for DIR in openbsd calculate; do
   if [[ ! -d "${USBMNTISO}/iso/${DIR}" ]]; then
-    ${ISOCMD_PREFIX} mkdir -p "${USBMNTISO}/iso/${DIR}"
+    ${ISOCMD_PREFIX} mkdir -pv "${USBMNTISO}/iso/${DIR}"
     if [ -n "$ISOCMD_CHOWN" ]; then $ISOCMD_CHOWN "${USBMNTISO}/iso/${DIR}"; fi
   fi
 done
