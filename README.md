@@ -28,10 +28,13 @@ Disadvantages :
  * Setting up isn't as easy as a simple cat from the ISO image to a block device
 
 As modern Linux ISOs often exceed the 4GB file size limit of FAT32, GLIM now 
-supports a second partition using other filesystems supported by GRUB2, such as 
-ext3/ext4, NTFS or exFAT - but the distribution must also support booting from 
-it, which isn't the case for many with NTFS (Ubuntu does, Fedora doesn't) and 
-exFAT (Ubuntu doesn't, Fedora does). Ext4 is a safe bet for the second partition.
+supports a second partition using other filesystems supported by GRUB2, such as
+ext3/ext4, F2FS, NTFS or exFAT - but the distribution must also support booting from
+it, which isn't the case for many with NTFS (Ubuntu does, Fedora doesn't),
+F2FS (Ubuntu doesn't) and exFAT (Ubuntu doesn't, Fedora does).
+Ext4 is a safe bet for the second partition.
+Note: Writing to Ext4 on some flash drives can be extreamely slow,
+try adding `-O ^has_journal,^uninit_bg,^ext_attr,^huge_file,^64bit` when formatting.
 
 
 Screenshots
@@ -49,11 +52,14 @@ although you can still use a single partition if you want.
 
 * The ISO folder has been moved from `/boot/iso/` to just `/iso/`, so that it's
 easier to find, and also is in the same location whether you use one or two partitions.
+GLIM will search for '/iso' according to partitions order and use the first one found.
 
-* Glim now supports booting Windows (x64) 10+ Setup or PreinstallEnvironment from separate NTFS partitions.
+* Glim now supports booting Windows (x64) 10+ Setup
+or Preinstall Environment from separate NTFS partitions.
 
 * Since vast majority of ISOs are uniquely named, only openbsd and calculate ISOs
-should be placed in their respective directories. The rest of the ISOs are expected to reside in `/iso/`.
+should be placed in their respective directories.
+The rest of the ISOs are expected to reside in `/iso/`.
 
 Requirements / Layout
 ---
@@ -96,7 +102,7 @@ GLIM needs the BIOS Boot partition to come after the other two partitions.
     Also it is recommended to mark the (GLIM/EFI) partition as "system" to hide it.
     Other partition might result in harmless warnings they are not supported by other OSs.
 
-    Here is an example of a recommended disk layout that covers all supported functionality:
+    Here is an example of a disk layout that covers all supported use cases:
 
 ```
 Disk /dev/sda: 124GB
@@ -134,7 +140,7 @@ and just run the script (as a normal user) :
 Once finished, you may change the filesystem label to anything you like. 
 The script will have created an `/iso/` folder, inside of which you will see
 a few empty folders for distributions with oddly named ISOs.
-The rest if ISOs can be placed directly in `/iso` folder.
+The rest if ISOs can be placed directly in `/iso/` folder.
 
 The supported ISOs (in alphabetical order) are:
 
