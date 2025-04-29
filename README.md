@@ -35,7 +35,7 @@ it, which isn't the case for many with NTFS (Ubuntu does, Fedora doesn't),
 F2FS (Ubuntu doesn't) and exFAT (Ubuntu doesn't, Fedora does).
 Ext4 is a safe bet for the second partition.
 Note: Writing to Ext4 on some flash drives can be extreamely slow,
-try adding `-O ^has_journal,^uninit_bg,^ext_attr,^huge_file,^64bit` when formatting.
+try adding `-O sparse_super2,^has_journal,^uninit_bg,^ext_attr,^huge_file,^64bit` when formatting.
 
 
 Screenshots
@@ -56,7 +56,7 @@ easier to find, and also is in the same location whether you use one or two part
 GLIM will search for '/iso' according to partitions order and use the first one found.
 
 * Glim now supports booting Windows (x64) 10+ Setup
-or Preinstall Environment from separate NTFS partitions.
+or Preinstall Environment from separate NTFS/FAT/ExFAT partitions.
 
 * Since vast majority of ISOs are uniquely named, only openbsd and calculate ISOs
 should be placed in their respective directories.
@@ -93,20 +93,19 @@ See notes below regarding BIOS boot partition.
      You might see a harmless warning regarding failed Persistent storage upgrade.
      It happens because Tails assumes the Tails image is directly on the USB drive
      when Persistent storage is available.
- * Add Windows Setup/PE paritions formated as NTFS and containing ISO content
-   of your favorite Windows or LiveCD.
-   You can also place autounattend.xml on those partitions if you want to allow customizations.
-   Good starting point for create such customizations is here: https://schneegans.de/windows/unattend-generator/
-   Boot menu option will be added for each detected instance.
+ * Add NTFS/FAT/ExFAT formatted paritions with the content of Windows Setup or Windows LiveCD ISOs.
+   Windows boot entry will be added for each detected partition.
+   Optionally you can place autounattend.xml on those partitions if you want to customize the installation process.
+   To create your own autounattend.xml visit: https://schneegans.de/windows/unattend-generator/
 
    Note:
     If you want to be able to mount one of the partitions on Android/Windows
-    it is recommended to format it as FAT32 or ExFAT and place it as first prtition.
-    To do that you need to toggle CHECK_ORDER variable in glim.sh during installation.
-    Also it is recommended to mark the (GLIM/EFI) partition as "system" to hide it.
-    Other partition might result in harmless warnings they are not supported by other OSs.
+    it is recommended to format it as FAT32 or ExFAT and place it as a first partition.
+    To do that you need to disable CHECK_ORDER variable in glim.sh prior to installation
+    to allow non-default partitions order.
+    Unsupported partitions migh result in anoying but harmless pop-ups/warnings.
 
-    Here is an example of a disk layout that covers all supported use cases:
+ Here is an example of a disk layout that covers all supported use cases:
 
 ```
 Disk /dev/sda: 124GB
@@ -116,8 +115,8 @@ Number  Start   End     Size    File system  Name       Flags             Purpos
 1      1049kB  64.4GB  64.4GB  exfat        GLIMXFAT   msftdata          [Generic file storage accesible on Linux/Windows/Andoird/MacOS]
 3      64.4GB  98.8GB  34.4GB  ext4         GLIMISO                      [ISO storage and Generic Storage for Linux]
 4      98.8GB  107GB   8594MB  luks+ext4    TailsData                    [Encrypted Persistent Storage for Tails]
-5      107GB   116GB   8403MB  ntfs         GLIMWIN11  msftdata          [Windows 11 Setup]
-6      116GB   124GB   8401MB  ntfs         GLIMWINPE  msftdata          [Windows PE (HBCD)]
+5      107GB   116GB   8403MB  exfat        GLIMWIN11  msftdata          [Windows 11 Setup]
+6      116GB   124GB   8401MB  ntfs         GLIMWINPE  msftdata          [Windows 11 PE HBCD]
 2      124GB   124GB   33.6MB  fat16        GLIM       boot, hidden, esp [GLIM boot partition]
 ```
 
