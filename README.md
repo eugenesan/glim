@@ -9,7 +9,7 @@ https://github.com/thias/glim or http://glee.thias.es/GLIM
 Overview
 ---
 
-GLIM ([G]RUB2 [L]ive [I]SO [M]ultiboot) is a set of grub configuration files
+GLIM `[G]RUB2 [L]ive [I]SO [M]ultiboot` is a set of grub configuration files
 to turn USB storage device containing many GNU/Linux and *BSD distribution ISO images
 into a neat device from which many different Live environments and Installation media can be used.
 The same can be achieved by unpacking Windwows ISO images onto separate NTFS partitions.
@@ -170,7 +170,7 @@ The supported ISOs (in alphabetical order) are:
 * [`calculate`](https://wiki.calculate-linux.org/desktop)
 * ~~[`centos`](https://www.centos.org/)~~ - _Live was discontinued_
 * [`clonezilla`](https://clonezilla.org/)
-* [`debian`](https://www.debian.org/CD/live/) - _live & `mini.iso`_
+* [`debian`](https://www.debian.org/CD/live/) - _live, mini & partial netinst_
 * [`elementary`](https://elementary.io/)
 * [`fedora`](https://fedoraproject.org/)
 * [`finnix`](https://www.finnix.org/)
