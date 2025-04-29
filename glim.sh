@@ -17,14 +17,15 @@ if [[ `id -u` -eq 0 ]]; then
 fi
 
 # Use alternative if sudo is not found
-if [[ ! `which sudo &>/dev/null` ]]; then
-    if which doas &>/dev/null; then
-        alias sudo=doas
-    else
-        sudo () {
-            su -c "$*"
-        }
-    fi
+if ! command -v sudo &>/dev/null; then
+  if command -v doas &>/dev/null; then
+    alias sudo=doas
+  else
+    function sudo {
+      su -c "$*"
+      return $?
+    }
+  fi
 fi
 
 # Sanity check : GRUB2
