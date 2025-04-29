@@ -192,6 +192,7 @@ The supported ISOs (in alphabetical order) are:
 * [`peppermint`](https://peppermintos.com/)
 * [`popos`](https://pop.system76.com/)
 * [`porteus`](http://www.porteus.org/)
+* [`rescuezilla`](https://rescuezilla.com/)
 * [`rhel`](https://www.redhat.com/rhel) - _Installation only_
 * [`rockylinux`](https://rockylinux.org/)
 * [`slitaz`](https://slitaz.org/)
