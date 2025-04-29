@@ -62,7 +62,9 @@ or Preinstall Environment from separate NTFS partitions.
 should be placed in their respective directories.
 The rest of the ISOs are expected to reside in `/iso/`.
 
-Requirements / Layout
+* Added the `format_empty_disk.sh` script.
+
+Requirements / Partitioning
 ---
 
 You need a USB memory stick (or external hard drive!) partitioned & formatted 
@@ -77,6 +79,7 @@ The second partition should be formatted as Ext4 with the filesystem label `GLIM
 It's best if the USB stick uses MBR, but if it uses GPT (as GNOME's Disks utility does) then
 GRUB only supports installing for EFI (not BIOS) - unless you add a third BIOS Boot partition.
 GLIM needs the BIOS Boot partition to come after the other two partitions.
+See notes below regarding BIOS boot partition.
 
 3. Optionally you can add more paritions. For example:
  * Add generic partition for file transfers. It is recommended to format it as ExFAT.
@@ -118,14 +121,26 @@ Number  Start   End     Size    File system  Name       Flags             Purpos
 2      124GB   124GB   33.6MB  fat16        GLIM       boot, hidden, esp [GLIM boot partition]
 ```
 
-See the link below for details on how to create a BIOS Boot partition:
-
+Notes:
+See the following link for details on how to create a BIOS Boot partition: 
 https://wiki.archlinux.org/title/GRUB#GUID_Partition_Table_(GPT)_specific_instructions
-
-But basically create an unformatted 1MB partition at the end of the disk, then 
+Basically create an unformatted 1MB partition at the end of the disk, then 
 change it's partition type to "BIOS Boot" (which has the 
 GUID `21686148-6449-6E6F-744E-656564454649`).  You can do this with GNOME's 
 Disks utility, without resorting to the terminal!
+
+If you find partitioning difficult, then you can try using the new experimental 
+script `format_empty_disk.sh`, which will ask you a few questions before
+setting-up an empty disk with GLIM's recommended two partition GPT set-up 
+(plus a BIOS Boot partition), ready to use with `glim.sh` itself.
+Using the sript should be safe, so for example it shouldn't delete any partitions,
+only create new ones... And in the event of any errors, the script should stop rather than risk 
+doing anything wrong.
+HOWEVER, it is still a very new script, which likely contains bugs,
+so please open issues about any problems you experience.
+You use this script entirely at your own risk. If it formats your entire computer, then that is your problem.
+So please make sure you have a recent backup before using it or better yet,
+use LiveCD with permanent storage disconnected/disabled.
 
 
 Installation
