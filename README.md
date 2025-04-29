@@ -1,20 +1,21 @@
 GRUB2 Live ISO Multiboot
 ========================
 
-https://github.com/thias/glim | http://glee.thias.es/GLIM
+This version: https://github.com/eugenesan/glim is forked from: https://github.com/cshandley-uk/bash_glim
+Original (now abandonned) project can be found at:
+https://github.com/thias/glim or http://glee.thias.es/GLIM
 
 
 Overview
 ---
 
-GLIM "[G]RUB2 [L]ive [I]SO [M]ultiboot" is a set of grub configuration files
-to turn USB memory stick containing GNU/Linux, *BSD and Windows ISO images
-into a neat device from which many different Live environments
-and Installation media can be used.
+GLIM ([G]RUB2 [L]ive [I]SO [M]ultiboot) is a set of grub configuration files
+to turn USB storage device containing many GNU/Linux and *BSD distribution ISO images
+into a neat device from which many different Live environments and Installation media can be used.
+The same can be achieved by unpacking Windwows ISO images onto separate NTFS partitions.
 
-GLIM is a more basic but completely open source alternative to Ventoy.
-In fact, GLIM only provides basic GRUB scripts and GRUB configuations.
-Runtime binaries are simply copied from GRUB2 instance of the host.
+GLIM can be viewed as a more basic but completely open source alternative to Ventoy.
+In fact, GLIM provides only config files while runtime binaries are provided by GRUB2 on the host.
 
 Advantages over extracting files or using special Live USB creation tools :
 
@@ -68,7 +69,7 @@ You need a USB memory stick (or external hard drive!) partitioned & formatted
 one of the following ways:
 
 1. A single partition formatted as FAT32 with the filesystem label `GLIM`. 
-It doesn't matter if it uses MBR or GPT.
+You can use GPT or MBR as needed but GPT is preffered unless legacy BIOS support is desired.
 
 2. Two partitions. The small first partition must be formatted as FAT32 with
 the filesystem label `GLIM` and recommended size of 32MB (actual GLIM size is only 12MB).
