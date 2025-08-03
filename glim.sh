@@ -75,6 +75,13 @@ if [[ ! -b "$USBDEV" ]]; then
   echo "ERROR: ${USBDEV} block device not found."
   exit 1
 fi
+
+# Sanity check : fdisk command
+if ! which fdisk &>/dev/null; then
+  echo "ERROR: fdisk command not found."
+  exit 1
+fi
+
 echo "Running fdisk -l ${USBDEV} (with sudo) ..."
 FDisk="$(sudo fdisk -l ${USBDEV})"
 mapfile -t PartOrder < <(echo "$FDisk" | grep -E ^${USBDEV} | sort -nk2,2 | awk '{ print $1 }')
