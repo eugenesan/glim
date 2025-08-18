@@ -84,7 +84,9 @@ See notes below regarding BIOS boot partition.
 3. Optionally you can add more paritions. For example:
  * Add generic partition for file transfers. It is recommended to format it as ExFAT.
  * Add LUKS/Ext4 parition to use with Linux LiveDVDs and Tails.
-   To trick Tails to use this partition as Persistent storage:
+   For casper based LiveCDs (Ubuntu) create ext4 parition `writable` or `casper-rw` for older releases.
+   For Tails Encrypted Persistant storage ext4+LUKS partition `TailsData`,
+   to trick Tails to use this partition as Persistent storage:
     1. Name the LUKS container and the ext4 partition as "TailData"
     2. Change partitiontype to "Linux Reserved"
     3. Create folders: `dont-ask-again`, `Persistent/Tor Browser` owned by user 1000:1000
@@ -114,10 +116,11 @@ Partition Table: gpt
 Number  Start   End     Size    File system  Name       Flags             Purpose
 1      1049kB  64.4GB  64.4GB  exfat        GLIMXFAT   msftdata          [Generic file storage accesible on Linux/Windows/Andoird/MacOS]
 3      64.4GB  98.8GB  34.4GB  ext4         GLIMISO                      [ISO storage and Generic Storage for Linux]
-4      98.8GB  107GB   8594MB  luks+ext4    TailsData                    [Encrypted Persistent Storage for Tails]
-5      107GB   116GB   8403MB  exfat        GLIMWIN11  msftdata          [Windows 11 Setup]
-6      116GB   124GB   8401MB  ntfs         GLIMWINPE  msftdata          [Windows 11 PE HBCD]
-2      124GB   124GB   33.6MB  fat16        GLIM       boot, hidden, esp [GLIM boot partition]
+4      98.8GB  107GB   8594MB  luks+ext4    TailsData                    [Tails Encrypted Persistent]
+5      107GB   116GB   8403MB  ext4         casper-rw                    [Ubuntu Live Persistent]
+6      116GB   116GB   8403MB  exfat        GLIMWIN11  msftdata          [Windows 11 Setup]
+7      124GB   132GB   8401MB  ntfs         GLIMWINPE  msftdata          [Windows 11 PE HBCD]
+2      132GB   132GB   33.6MB  fat16        GLIM       boot, hidden, esp [GLIM boot partition]
 ```
 
 Notes:
