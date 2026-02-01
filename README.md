@@ -189,6 +189,7 @@ The supported ISOs (in alphabetical order) are:
 * [`memtest`](https://memtest.org/) - _Only .bin/.efi, not .iso_
 * [`mxlinux`](https://mxlinux.org/)
 * [`netrunner`](https://www.netrunner.com/)
+* [`nixos`](https://nixos.org/)
 * [`openbsd`](https://www.openbsd.org/)
 * [`opensuse`](https://www.opensuse.org/) - _Live from Alternative Downloads only_
 * [`peppermint`](https://peppermintos.com/)
