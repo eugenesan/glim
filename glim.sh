@@ -110,9 +110,9 @@ fi
 # Look for BIOS Boot partition
 BiosBoot="$(echo "$FDisk" | grep -E ^${USBDEV} | awk '{ print $1 }' | xargs -I {} lsblk -ndo PARTTYPE {} | grep "^21686148-6449-6e6f-744e-656564454649$" | cat)"
 if [ -n "$BiosBoot" ]; then
-  echo "Found BIOS Boot partition."
+  echo "Found BIOS/Grub boot partition."
 else
-  echo "No BIOS Boot partition found."
+  echo "No BIOS/Grub boot partition found."
 fi
 
 # Sanity check : our GLIM partition is mounted
