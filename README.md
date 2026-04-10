@@ -2,8 +2,7 @@ GRUB2 Live ISO Multiboot
 ========================
 
 This version: https://github.com/eugenesan/glim is forked from: https://github.com/cshandley-uk/bash_glim
-Original (now abandonned) project can be found at:
-https://github.com/thias/glim or http://glee.thias.es/GLIM
+which in turn was forked from the original project https://github.com/thias/glim (http://glee.thias.es/GLIM)
 
 
 Overview
