@@ -73,9 +73,8 @@ one of the following ways:
 1. A single partition formatted as FAT32 with the filesystem label `GLIM`. 
 You can use GPT or MBR as needed but GPT is preffered unless legacy BIOS support is desired.
 
-2. Two partitions. The small first partition must be formatted as FAT32 with
-the filesystem label `GLIM` and recommended size of 32MB (actual GLIM size is only 12MB).
-The second partition should be formatted as Ext4 with the filesystem label `GLIMISO`.
+2. Two partitions. A small (16MB+) first partition formatted as FAT32 with the filesystem label `GLIM`
+and a second partition formatted as Ext4 with the filesystem label `GLIMISO`.
 It's best if the USB stick uses MBR, but if it uses GPT (as GNOME's Disks utility does) then
 GRUB only supports installing for EFI (not BIOS) - unless you add a third BIOS Boot partition.
 GLIM needs the BIOS Boot partition to come after the other two partitions.
@@ -91,21 +90,20 @@ See notes below regarding BIOS boot partition.
     2. Change partitiontype to "Linux Reserved"
     3. Create folders: `dont-ask-again`, `Persistent/Tor Browser` owned by user 1000:1000
     4. Add `/home/amnesia/Persistent	source=Persistent` to persistence.conf owned by user 115:122
-    Note:
-     You might see a harmless warning regarding failed Persistent storage upgrade.
-     It happens because Tails assumes the Tails image is directly on the USB drive
-     when Persistent storage is available.
+       A harmless warning regarding failed Persistent storage upgrade maybe shown.
  * Add NTFS/FAT/ExFAT formatted paritions with the content of Windows Setup or Windows LiveCD ISOs.
+   To fit install.wim file on FAT, use dism /Split-Image on Windows or wimsplit from the "wimlib" or "imagex" package on Linux.
    Windows boot entry will be added for each detected partition.
-   Optionally you can place autounattend.xml on those partitions if you want to customize the installation process.
+   You can place autounattend.xml on those partitions to customize installation process.
    To create your own autounattend.xml visit: https://schneegans.de/windows/unattend-generator/
+   To prevent Windows Setup from installing it's bootloader on GLIM partition, do not set ESP/Boot/System flags on any FAT partitions.
 
-   Note:
-    If you want to be able to mount one of the partitions on Android/Windows
-    it is recommended to format it as FAT32 or ExFAT and place it as a first partition.
-    To do that you need to disable CHECK_ORDER variable in glim.sh prior to installation
-    to allow non-default partitions order.
-    Unsupported partitions migh result in anoying but harmless pop-ups/warnings.
+ Note:
+  If you want to be able to mount one of the partitions on Android/Windows
+  it is recommended to format it as FAT32 or ExFAT and place it as a first partition.
+  To do that you need to disable CHECK_ORDER variable in glim.sh prior to installation
+  to allow non-default partitions order.
+  Unsupported partitions migh result in anoying but harmless pop-ups/warnings.
 
  Here is an example of a disk layout that covers all supported use cases:
 
@@ -126,10 +124,9 @@ Number  Start   End     Size    File system  Name       Flags             Purpos
 Notes:
 See the following link for details on how to create a BIOS Boot partition: 
 https://wiki.archlinux.org/title/GRUB#GUID_Partition_Table_(GPT)_specific_instructions
-Basically create an unformatted 1MB partition at the end of the disk, then 
-change it's partition type to "BIOS Boot" (which has the 
-GUID `21686148-6449-6E6F-744E-656564454649`).  You can do this with GNOME's 
-Disks utility, without resorting to the terminal!
+Basically you must have MBR or GPT+MBR partition table (use gdisk to create both)
+and create an unformatted 1MB partition anywhere on the disk while partition number is under 4
+and then change it's partition type to "BIOS Boot" or "bios_grub" (which has the GUID `21686148-6449-6E6F-744E-656564454649`).
 
 If you find partitioning difficult, then you can try using the new experimental 
 script `format_empty_disk.sh`, which will ask you a few questions before
@@ -144,6 +141,9 @@ You use this script entirely at your own risk. If it formats your entire compute
 So please make sure you have a recent backup before using it or better yet,
 use LiveCD with permanent storage disconnected/disabled.
 
+If your host system uses "signed" version of Grub, you might need to disable Secure Boot to support all filesystems like NTFS.
+Also it is possible some Linux distributions might disable some filesystem in "signed" versions of Grub.
+In that case you might need to replace your host GRUB with "unsigned" version.
 
 Installation
 ---
